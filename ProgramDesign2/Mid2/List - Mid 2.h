@@ -205,7 +205,7 @@ public:
 	   myData.myHead->myVal = Ty();
 	   myData.myHead->prev = myData.myHead->next = myData.myHead;
 	   
-	   if (right.size() > myData.mySize)
+	   /*if (right.size() > myData.mySize) //delete
 	   {
 		   while (right.size() > myData.mySize)
 			   insert(end(), Ty());
@@ -214,10 +214,10 @@ public:
 	   {
 		   while (right.size() < myData.mySize)
 			   erase(end());
-	   }
+	   }*/
 
-	   for (auto it1 = begin(), it2 = right.begin(); it1 != myData.myHead; it1 = it1->next, it2 = it2->next)
-		   it1->myVal = it2->myVal;
+	   for (auto it1 = right.begin(); it1 != right.end(); ++it1) //modify
+           insert(end(), *it1);//modify
    }
 
    // List destructor

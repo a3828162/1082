@@ -335,7 +335,6 @@ public:
       myData.map[ 0 ] = new value_type[ 4 ];
       myData.map[ 0 ][ 0 ] = val;
       myData.mapSize = 8;
-	  //myData.myOff = 0;
       myData.mySize = count;
    }
 
@@ -343,17 +342,17 @@ public:
    deque( const deque &right )
       : myData()
    {
-	   myData.map = new Ty * [right.myData.mapSize]();
-	   myData.mapSize = right.myData.mapSize;
-	   myData.myOff = right.myData.myOff;
-	   myData.mySize = right.myData.mySize;
-	   for (size_t i = 0; i < (4 * myData.mapSize); ++i)
-	   {
-		   if (myData.map[i / 4] == nullptr && right.myData.map[i / 4] != nullptr)
-			   myData.map[i / 4] = new Ty[4]();
-		   if (myData.map[i / 4] != nullptr && right.myData.map[i / 4] != nullptr)
-			   myData.map[i / 4][i % 4] = right.myData.map[i / 4][i % 4];
-	   }
+       myData.map = new Ty * [right.myData.mapSize]();
+       myData.mapSize = right.myData.mapSize;
+       myData.myOff = right.myData.myOff;
+       myData.mySize = right.myData.mySize;
+       for (size_t i = 0; i < (4 * myData.mapSize); ++i)
+       {
+           if (myData.map[i / 4] == nullptr && right.myData.map[i / 4] != nullptr)
+               myData.map[i / 4] = new Ty[4]();
+           if (myData.map[i / 4] != nullptr && right.myData.map[i / 4] != nullptr)
+               myData.map[i / 4][i % 4] = right.myData.map[i / 4][i % 4];
+       }
    }
 
    // destroy the deque
@@ -401,152 +400,157 @@ public:
    // insert val at where
    void insert( const_iterator where, const value_type &val )
    {
-	   unsigned int inserted = 0;
-	   if (myData.mySize == 0)
-	   {
-		   if (myData.mapSize == 0)
-		   {
-			   myData.mapSize = 8;
-			   myData.map = new Ty * [myData.mapSize]();
-		   }
-		   if (myData.map[myData.mapSize-1] == nullptr)
-			   myData.map[myData.mapSize - 1] = new Ty[4]();
-		   myData.map[myData.mapSize - 1][3] = val;
-		   myData.myOff = (4*myData.mapSize)-1;
-	   }
-	   else
-	   {
-		   if (begin() <= where && where <= end())
-		   {
-			   // all elements before where move forward
-			   if (where <= begin() + myData.mySize / 2)
-			   {
-				   size_t newPosition = (myData.myOff - 1) % (4 * myData.mapSize);
-				   if (newPosition % 4 == 3 && myData.mySize >= (myData.mapSize - 1) * 4)
-				   {
-					   doubleMapSize();
-					   newPosition = (myData.myOff - 1) % (4 * myData.mapSize);
-				   }
-				   if (newPosition % 4 == 3)
-					   if (myData.map[newPosition / 4] == nullptr)
-						   myData.map[newPosition / 4] = new Ty[4]();
-				   myData.myOff = newPosition;
-				   auto it1 = begin(), it2 = begin();
+       unsigned int inserted = 0;
+       if (myData.mySize == 0)
+       {
+           if (myData.mapSize == 0)
+           {
+               myData.mapSize = 8;
+               myData.map = new Ty * [myData.mapSize]();
+           }
+           if (myData.map[myData.mapSize - 1] == nullptr)
+               myData.map[myData.mapSize - 1] = new Ty[4]();
+           myData.map[myData.mapSize - 1][3] = val;
+           myData.myOff = (4 * myData.mapSize) - 1;
+       }
+       else
+       {
+           if (begin() <= where && where <= end())
+           {
+               // all elements before where move forward
+               if (where <= begin() + myData.mySize / 2)
+               {
+                   size_t newPosition = (myData.myOff - 1) % (4 * myData.mapSize);
+                   if (newPosition % 4 == 3 && myData.mySize >= (myData.mapSize - 1) * 4)
+                   {
+                       doubleMapSize();
+                       newPosition = (myData.myOff - 1) % (4 * myData.mapSize);
+                   }
+                   if (newPosition % 4 == 3)
+                       if (myData.map[newPosition / 4] == nullptr)
+                           myData.map[newPosition / 4] = new Ty[4]();
+                   //myData.myOff = newPosition;delete
+                   /*auto it1 = begin(), it2 = begin();delete
+                   size_t position = (where.myOff) % (4 * myData.mapSize);
+                   if (it1.myOff == where.myOff)
+                   {
+                       *it1 = val;
+                   }
+                   else
+                   {
+                       for (++it2; ; ++it1, ++it2)
+                       {
+                           int a = (position - 1) % (4 * myData.mapSize);
+                           if (a == 0)
+                               a = 4 * myData.mapSize;
+                           if (it1.myOff == a)
+                               break;
+                           if (it1.myOff >= (4 * myData.mapSize))
+                               it1.myOff %= (4 * myData.mapSize);
+                           if (it2.myOff >= (4 * myData.mapSize))
+                               it2.myOff %= (4 * myData.mapSize);
+                           *it1 = *it2;
+                       }
+                       *it1 = val;
+                   }*/
+                   unsigned int i = newPosition;//add
+                   unsigned int j = myData.myOff % (4 * myData.mapSize);//add
+                   for (unsigned int k = 0; k < where.myOff - myData.myOff; i++, j++, k++)//add
+                   {
+                       if (i == 4 * myData.mapSize) i = 0;//add
+                       if (j == 4 * myData.mapSize) j = 0;//add
+                       myData.map[i / 4][i % 4] = myData.map[j / 4][j % 4];//add
+                   }//add
+                   unsigned int inserted = (where.myOff - 1) % (4 * myData.mapSize);//add
+                   myData.map[inserted / 4][inserted % 4] = val;//add
+                   myData.myOff = newPosition;//add
+               }
+               else  // all elements after (and at) where move backward
+               {
+                   size_t newPosition = (myData.myOff + myData.mySize) % (4 * myData.mapSize);
+                   if (newPosition % 4 == 0 && myData.mySize >= (myData.mapSize - 1) * 4)
+                   {
+                       doubleMapSize();
+                       newPosition = (myData.myOff + myData.mySize) % (4 * myData.mapSize);
+                   }
+                  /* else//delete
+                       if (myData.myOff >= (4 * myData.mapSize))//delete
+                           myData.myOff %= (4 * myData.mapSize);*///delete
+                   if (newPosition % 4 == 0)
+                       if (myData.map[newPosition / 4] == nullptr)
+                           myData.map[newPosition / 4] = new Ty[4]();
 
-				   size_t position = (where.myOff) % (4 * myData.mapSize);
-
-				   if (it1.myOff == where.myOff)
-				   {
-					   *it1 = val;
-				   }
-				   else
-				   {
-					   for (++it2; ; ++it1, ++it2)
-					   {
-						   int a = (position - 1)%(4*myData.mapSize);
-						   if (a == 0)
-							   a = 4 * myData.mapSize;
-						   if (it1.myOff == a)
-							   break;
-						   if (it1.myOff >= (4 * myData.mapSize))
-							   it1.myOff %= (4 * myData.mapSize);
-						   if (it2.myOff >= (4 * myData.mapSize))
-							   it2.myOff %= (4 * myData.mapSize);
-						   *it1 = *it2;					   
-					   }
-					   *it1 = val;
-				   }
-			   }
-			   else  // all elements after (and at) where move backward
-			   {
-				   size_t newPosition = (myData.myOff + myData.mySize) % (4 * myData.mapSize);
-				   if (newPosition % 4 == 0 && myData.mySize >= (myData.mapSize - 1) * 4)
-				   {
-					   doubleMapSize();
-					   newPosition = (myData.myOff + myData.mySize) % (4 * myData.mapSize);
-				   }
-				   else
-					   if (myData.myOff >= (4 * myData.mapSize))
-						   myData.myOff %= (4 * myData.mapSize);
-				   if (newPosition % 4 == 0)
-					   if (myData.map[newPosition / 4] == nullptr)
-						   myData.map[newPosition / 4] = new Ty[4]();
-
-				   auto it1 = end(), it2 = end();
-				   if (it1.myOff == where.myOff)
-				   {
-					   *it1 = val;
-				   }
-				   else
-				   {
-					   for (--it2; it1.myOff != where.myOff; --it1, --it2)
-						   *it1 = *it2;
-					   *it1 = val;
-				   }
-
-			   }
-		   }
-	   }
-	   ++myData.mySize;
+                  /* auto it1 = end(), it2 = end();delete
+                   if (it1.myOff == where.myOff)
+                   {
+                       *it1 = val;
+                   }
+                   else
+                   {
+                       for (--it2; it2.myOff > where.myOff; --it1, --it2)
+                       {
+                           if (it1.myOff == -1)it1.myOff = 4 * myData.mapSize - 1;
+                           if (it2.myOff == -1)it2.myOff = 4 * myData.mapSize - 1;
+                           *it1 = *it2;
+                       }
+                       *it1 = val;
+                   }*/
+                   int i = newPosition;//add
+                   int j = (myData.myOff + myData.mySize - 1) % (4 * myData.mapSize);//add
+                   for (unsigned int k = 0; k < myData.myOff + myData.mySize - where.myOff; i--, j--, k++)//add
+                   {
+                       if (i == -1) i = 4 * myData.mapSize - 1;//add
+                       if (j == -1) j = 4 * myData.mapSize - 1;//add
+                       myData.map[i / 4][i % 4] = myData.map[j / 4][j % 4];//add
+                   }
+                   unsigned int inserted = (where.myOff) % (4 * myData.mapSize);//add
+                   myData.map[inserted / 4][inserted % 4] = val;//add
+                   myData.myOff = myData.myOff % (4 * myData.mapSize);//add
+               }
+           }
+       }
+       ++myData.mySize;
    }
 
    // erase element at where
    void erase( const_iterator where )
    {
-	   if (myData.mySize > 0 && begin() <= where && where < end())
-	   {
-		   if (myData.mySize == 1 && begin() == where)
-		   {
-			   myData.myOff = 0;
-			   myData.mySize = 0;
-		   }
-		   else
-		   {
-			   // all elements before where move backward
-			   if (where < begin() + myData.mySize / 2)
-			   {
-				   /*auto it1 = begin(), it2 = begin();
-				   if (it1.myOff != where.myOff)
-				   {
-					   for (; it1.myOff != where.myOff; ++it1, ++it2);
-					   for (--it2; it1.myOff != begin().myOff; --it1, --it2)
-					   {
-						   *it1 = *it2;
-					   }
-				   }*/
-				   auto it1 = begin(), it2 = begin();
-				   if (it1 != where)
-				   {
-					   for (; it1 != where; ++it1, ++it2);
-					   for (--it2; it1 != begin(); --it1, --it2)
-						   * it1 = *it2;
-				   }
-				   ++myData.myOff;
-				   if (myData.myOff >= (4 * myData.mapSize))
-					   myData.myOff %= (4 * myData.mapSize);
-			   }
-			   else // all elements after where move forward
-			   {
-				   /*auto it1 = end(), it2 = end();
-				   if (it1.myOff != where.myOff)
-				   {
-					   for (; it1.myOff != where.myOff; --it1, --it2);
-					   for (++it2; it1.myOff != end().myOff; ++it1, ++it2)
-					   {
-						   *it1 = *it2;
-					   }
-				   }*/
-				   auto it1 = end(), it2 = end();
-				   if (it1 != where)
-				   {
-					   for (; it1 != where; --it1, --it2);
-					   for (++it2; it1 != end(); ++it1, ++it2)
-						   * it1 = *it2;
-				   }
-			   }
-			   --myData.mySize;
-		   }
-	   }
+       if (myData.mySize > 0 && begin() <= where && where < end())
+       {
+           size_t off = where - begin();//add
+           if (myData.mySize == 1 && begin() == where)
+           {
+               myData.myOff = 0;
+               myData.mySize = 0;
+           }
+           else
+           {
+               if (where < begin() + myData.mySize / 2)
+               {
+                   auto it1 = begin() + off, it2 = begin() + off;//modify
+                   //if (it1 != where)delete
+                   //{
+                       //for (; it1 != where; ++it1, ++it2);delete
+                   for (--it2; it1 != begin(); --it1, --it2)
+                       *it1 = *it2;
+                   //}
+                   myData.myOff++;
+                   //if (myData.myOff >= (4 * myData.mapSize))
+                       //myData.myOff %= (4 * myData.mapSize);
+               }
+               else
+               {
+                   auto it1 = begin() + off, it2 = begin() + off;//modify
+                   //if (it1 != where)delete
+                   //{
+                       //for (; it1 != where; --it1, --it2);delete
+                   for (++it2; it1 != end() - 1; ++it1, ++it2)//modify
+                       *it1 = *it2;
+                   //}
+               }
+               --myData.mySize;
+           }
+       }
    }
 
    // erase all
@@ -577,29 +581,29 @@ private:
 
    void doubleMapSize()
    {
-	   if (myData.mapSize > 0)
-	   {
-		   Ty** newMap = new Ty * [2 * myData.mapSize]();
-		   size_t a = myData.myOff / 4;
-		   for (; a < (myData.myOff + myData.mySize) / 4; ++a)
-			   newMap[a] = new Ty[4]();
-		   if ((myData.myOff + myData.mySize) % 4 != 0)
-			   newMap[a] = new Ty[4]();
-		   a = myData.myOff;
-		   size_t b = myData.myOff;
-		   for (; a < (myData.myOff + myData.mySize); ++a, ++b)
-		   {
-			   if (b >= (4 * myData.mapSize))
-				   b = 0;
-			   newMap[a / 4][a % 4] = myData.map[b / 4][b % 4];
-		   }
-		   for (size_t i = 0; i < myData.mapSize; ++i)
-			   if (myData.map[i] != nullptr)
-				   delete[]myData.map[i];
-		   delete[]myData.map;
-		   myData.map = newMap;
-		   myData.mapSize *= 2;
-	   }
+       if (myData.mapSize > 0)
+       {
+           Ty** newMap = new Ty * [2 * myData.mapSize]();
+           size_t a = myData.myOff / 4;
+           for (; a < (myData.myOff + myData.mySize) / 4; ++a)
+               newMap[a] = new Ty[4]();
+           if ((myData.myOff + myData.mySize) % 4 != 0)
+               newMap[a] = new Ty[4]();
+           a = myData.myOff;
+           size_t b = myData.myOff;
+           for (; a < (myData.myOff + myData.mySize); ++a, ++b)
+           {
+               if (b >= (4 * myData.mapSize))
+                   b = 0;
+               newMap[a / 4][a % 4] = myData.map[b / 4][b % 4];
+           }
+           for (size_t i = 0; i < myData.mapSize; ++i)
+               if (myData.map[i] != nullptr)
+                   delete[]myData.map[i];
+           delete[]myData.map;
+           myData.map = newMap;
+           myData.mapSize *= 2;
+       }
    }
 
    ScaryVal myData;

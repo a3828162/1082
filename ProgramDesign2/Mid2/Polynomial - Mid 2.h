@@ -1,9 +1,11 @@
-#include <deque> // include deque class template definition
-#include <list> // include list class template definition
+//#include <deque> // include deque class template definition
+//List - 1083315 - Mid 2#include <list> // include list class template definition
+//#include<deque>
+//#include<list>
 using namespace std;
 
-//#include "E:\D\Computer Programming II\Computer Programming II - 1082\Exam\Midterm Exam 2\List.h"
-//#include "E:\D\Computer Programming II\Computer Programming II - 1082\Exam\Midterm Exam 2\Deque.h"
+#include "C:\Users\James\Desktop\YZU\程設作業\MidExam2\Fine\List - 1083315 - Mid 2.h"
+#include "C:\Users\James\Desktop\YZU\程設作業\MidExam2\Fine\Deque - 1083315 - Mid 2.h"
 
 #ifndef POLYNOMIAL_H
 #define POLYNOMIAL_H
@@ -75,35 +77,39 @@ const Polynomial< T >& Polynomial< T >::operator=( const Polynomial< T > &right 
 template< typename T >
 void Polynomial< T >::insert( Term termToInsert )
 {
-	auto it3 = this->polynomial.begin();
-	for (; it3 != this->polynomial.end(); ++it3)
+	auto it3 = polynomial.begin();//modify
+	for (; it3 != polynomial.end(); ++it3)//modify
 	{
-		if (((termToInsert.coef + it3->coef) == 0) && termToInsert.expon == it3->expon)
+		/*if (((termToInsert.coef + it3->coef) == 0) && termToInsert.expon == it3->expon) //delete
 		{
 			this->polynomial.erase(it3);
 			return;
-		}
-		else if (termToInsert.expon == it3->expon)
+		}*/ //delete
+		if (termToInsert.expon == it3->expon)//modify
 		{
 			it3->coef += termToInsert.coef;
-			return;
+			if (it3->coef == 0)//add
+				polynomial.erase(it3);//add
+			return;//add
 		}
 	}
-	auto it1 = this->polynomial.begin(), it2 = this->polynomial.begin();
-	++it2;
-	bool a = false;
-	for (; it2 != this->polynomial.end(); ++it1, ++it2)
+	//auto it1 = this->polynomial.begin(), it2 = this->polynomial.begin();delete
+	//++it2;delete
+	//bool a = false;delete
+	it3 = polynomial.begin();
+	for (; it3 != polynomial.end(); ++it3)//modify
 	{
-		if(termToInsert.expon<it1->expon&&termToInsert.expon>it2->expon)
+		if (termToInsert.expon>it3->expon)//modify
 		{
-			this->polynomial.insert(it2, termToInsert);
-			a = true;
+			//this->polynomial.insert(it2, termToInsert);delete
+			//a = true;delete
+			break;//add
 		}
 	}
-	if (a == false)
-	{
-		this->polynomial.insert(this->polynomial.end(), termToInsert);
-	}
+	//if (a == false)delete
+	//{delete
+		polynomial.insert(it3, termToInsert);//modify
+	//}delete
 }
 
 // Returns the product of two polynomials
